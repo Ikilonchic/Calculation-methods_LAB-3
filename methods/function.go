@@ -58,49 +58,45 @@ func (d Data) findRootSecondDerivative() (float64) {
 }
 
 //findMinMaxFirstDerivative ...
-func (d Data) findMinMaxFirstDerivative() (float64, float64) {
-	var min, max float64
-
-	first, last := d.A, d.B
-
-	for first < last {
-		if d.firstDerivative(first) < min {
-			min = d.firstDerivative(first)
+func (d Data) findMinMaxFirstDerivative() (min float64, max float64) {
+	for d.A < d.B {
+		if d.firstDerivative(d.A) < min {
+			min = d.firstDerivative(d.A)
 		}
 
-		if d.firstDerivative(first) > max {
-			max = d.firstDerivative(first)
+		if d.firstDerivative(d.A) > max {
+			max = d.firstDerivative(d.A)
 		}
 
-		first += 0.01
+		d.A += 0.01
 	}
 
-	return min, max
+	return 
 }
 
 //findMinMaxSecondDerivative ...
-func (d Data) findMinMaxSecondDerivative() (float64, float64) {
-	var min, max float64
-
-	first, last := d.A, d.B
-
-	for first < last {
-		if d.secondDerivative(first) < min {
-			min = d.secondDerivative(first)
+func (d Data) findMinMaxSecondDerivative() (min float64, max float64) {
+	for d.A < d.B {
+		if d.secondDerivative(d.A) < min {
+			min = d.secondDerivative(d.A)
 		}
 
-		if d.secondDerivative(first) > max {
-			max = d.secondDerivative(first)
+		if d.secondDerivative(d.A) > max {
+			max = d.secondDerivative(d.A)
 		}
 
-		first += 0.01
+		d.A += 0.01
 	}
 
-	return min, max
+	return 
 }
 
 //Easy ...
 func Easy(yourVariant Data) (float64, int) {
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
+	i := 1
+	Func := yourVariant.Func
+
 	min, max := yourVariant.findMinMaxFirstDerivative()
 	k := 2.0 / (min + max)
 
@@ -109,17 +105,13 @@ func Easy(yourVariant Data) (float64, int) {
 	}
 
 	newFunc := func(x float64) (float64) {
-		return x - k * yourVariant.Func(x)
+		return x - k * Func(x)
 	}
 
-	x0 := (yourVariant.A + yourVariant.B) / 2
+	x0 := (a + b) / 2
 	i, x := 1, newFunc(x0)
 
-	for ;; i++ {
-		if math.Abs(x - x0) < yourVariant.E || math.Abs(yourVariant.Func(x)) < yourVariant.E {
-			break
-		}
-
+	for ; math.Abs(x - x0) > e && math.Abs(Func(x)) > e; i++ {
 		x0 = x
 		x = newFunc(x0)
 	}
@@ -129,33 +121,33 @@ func Easy(yourVariant Data) (float64, int) {
 
 //Division ...
 func Division(yourVariant Data) (float64, int) {
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
 	i := 1
 	Func := yourVariant.Func
 
-	for ; math.Abs(Func((yourVariant.A + yourVariant.B) / 2)) > yourVariant.E; i++ {
-		if x := (yourVariant.A + yourVariant.B) / 2; Func(x) > 0 {
-			if Func(yourVariant.A) < 0 {
-				yourVariant.B = x
-			} else if Func(yourVariant.B) < 0 {
-				yourVariant.A = x
+	for ; math.Abs(Func((a + b) / 2)) > e; i++ {
+		if x := (a + b) / 2; Func(x) > 0 {
+			if Func(a) < 0 {
+				b = x
+			} else if Func(b) < 0 {
+				a = x
 			}
 		} else if Func(x) < 0 {
-			if Func(yourVariant.A) > 0 {
-				yourVariant.B = x
-			} else if Func(yourVariant.B) > 0 {
-				yourVariant.A = x
+			if Func(a) > 0 {
+				b = x
+			} else if Func(b) > 0 {
+				a = x
 			}
 		}
 	}
 
-	return (yourVariant.A + yourVariant.B) / 2, i
+	return (a + b) / 2, i
 }
 
 //Combination ...
 func Combination(yourVariant Data) (float64, int) {
-	a, b, e:= yourVariant.A, yourVariant.B, yourVariant.E
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
 	i := 1
-
 	Func := yourVariant.Func
 
 	First := yourVariant.firstDerivative
@@ -180,15 +172,19 @@ func Combination(yourVariant Data) (float64, int) {
 
 //Newton ...
 func Newton(yourVariant Data) (float64, int) {
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
+	i := 1
+	Func := yourVariant.Func
+
 	newFunc := func(x float64) (float64) {
-		return x - (yourVariant.Func(x) / yourVariant.firstDerivative(x))
+		return x - (Func(x) / yourVariant.firstDerivative(x))
 	}
 
-	x0 := (yourVariant.A + yourVariant.B) / 2
+	x0 := (a + b) / 2
 	i, x := 1, newFunc(x0)
 
 	for ;; i++{
-		if math.Abs(x - x0) < yourVariant.E || math.Abs(yourVariant.Func(x)) < yourVariant.E {
+		if math.Abs(x - x0) < e || math.Abs(Func(x)) < e {
 			break
 		}
 
@@ -229,6 +225,10 @@ func UpdateNewton(yourVariant Data) (float64, int) {
 
 //Hord ...
 func Hord(yourVariant Data) (float64, int) {
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
+	i := 1
+	Func := yourVariant.Func
+
 	var check bool
 	var x0, root float64
 
@@ -239,27 +239,27 @@ func Hord(yourVariant Data) (float64, int) {
 	} else {
 		root = yourVariant.findRootSecondDerivative()
 
-		if yourVariant.Func(root) > 0 {
-			if yourVariant.Func(yourVariant.A) < 0 {
-				yourVariant.B = root
-			} else if yourVariant.Func(yourVariant.B) < 0 {
-				yourVariant.A = root
+		if Func(root) > 0 {
+			if Func(a) < 0 {
+				b = root
+			} else if Func(b) < 0 {
+				a = root
 			}
-		} else if yourVariant.Func(root) < 0 {
-			if yourVariant.Func(yourVariant.A) > 0 {
-				yourVariant.B = root
-			} else if yourVariant.Func(yourVariant.B) > 0 {
-				yourVariant.A = root
+		} else if Func(root) < 0 {
+			if Func(a) > 0 {
+				b = root
+			} else if Func(b) > 0 {
+				a = root
 			}
 		}
 
-		if min < 0 && yourVariant.B == root {
+		if min < 0 && b == root {
 			check = false
-		} else if min > 0 && yourVariant.B == root {
+		} else if min > 0 && b == root {
 			check = true
-		} else if max < 0 && yourVariant.A == root {
+		} else if max < 0 && a == root {
 			check = false
-		} else if max > 0 && yourVariant.A == root {
+		} else if max > 0 && a == root {
 			check = true
 		}
 	}
@@ -268,24 +268,24 @@ func Hord(yourVariant Data) (float64, int) {
 		result := x
 
 		if check {
-			result -= (yourVariant.Func(x) / (yourVariant.Func(yourVariant.B) - yourVariant.Func(x))) * (yourVariant.B - x)
+			result -= (Func(x) / (Func(b) - Func(x))) * (b - x)
 		} else {
-			result -= (yourVariant.Func(x) / (yourVariant.Func(x) - yourVariant.Func(yourVariant.A))) * (x - yourVariant.A)
+			result -= (Func(x) / (Func(x) - Func(a))) * (x - a)
 		}
 
 		return result
 	}
 
 	if check {
-		x0 = yourVariant.A
+		x0 = a
 	} else {
-		x0 = yourVariant.B
+		x0 = b
 	}
 
 	i, x := 1, newFunc(x0)
 
 	for ;; i++{
-		if math.Abs(x - x0) < yourVariant.E || math.Abs(yourVariant.Func(x)) < yourVariant.E {
+		if math.Abs(x - x0) < e || math.Abs(Func(x)) < e {
 			break
 		}
 
