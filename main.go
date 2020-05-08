@@ -10,13 +10,14 @@ import (
 //Main ...
 func main() {
 	myVariant := methods.Data{}
+	
 	myFunc := func(x float64) (float64) {
 		return math.Pow(x, 5) - 2 * math.Pow(x, 4) - 7 * math.Pow(x, 3) + math.Pow(x, 2) - 25
 	}
 
-	//myFunc = func(x float64) (float64) {
-	//	return math.Pow(x, 3) - 2 * math.Cos(math.Pi * x) - 3
-	//}
+	myFunc = func(x float64) (float64) {
+		return math.Pow(x, 3) - 2 * math.Cos(math.Pi * x) - 3
+	}
 
 	myVariant.SetData(myFunc, 0, 4, 0.0000000001)
 	
@@ -39,7 +40,7 @@ func main() {
 	/*
 
 	x, i, timer = mytest.CheckTime(methods.UpdateNewton, myVariant)
-	fmt.Printf("x = %v, iterations = %v, time = %d, result = %v \n", x, i, timer.Nanoseconds(), myFunc(x))
+	fmt.Printf("\nUpdateNewton: x = %v, iterations = %v, time = %d, result = %v \n", x, i, timer.Nanoseconds(), myFunc(x))
 
 	*/
 	///////////////////////////////////////////////////////////////////////////////////////////

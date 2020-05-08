@@ -160,6 +160,10 @@ func Combination(yourVariant Data) (float64, int) {
 			a = a - Func(a) / First(a)
 		}
 
+		if math.Abs(b - a) < 2 * e {
+			break
+		}
+
 		if Func(b) * Second(b) <= 0 {
 			b = b - Func(b) * (b - a) / (Func(b) - Func(a))
 		} else if Func(b) * Second(b) > 0 {
@@ -175,6 +179,24 @@ func Newton(yourVariant Data) (float64, int) {
 	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
 	i := 1
 	Func := yourVariant.Func
+
+	if min, max := yourVariant.findMinMaxSecondDerivative(); math.Abs(min + max) < math.Abs(min) + math.Abs(max) {
+		root := yourVariant.findRootSecondDerivative()
+
+		if Func(root) > 0 {
+			if Func(a) < 0 {
+				b = root
+			} else if Func(b) < 0 {
+				a = root
+			}
+		} else if Func(root) < 0 {
+			if Func(a) > 0 {
+				b = root
+			} else if Func(b) > 0 {
+				a = root
+			}
+		}
+	}
 
 	newFunc := func(x float64) (float64) {
 		return x - (Func(x) / yourVariant.firstDerivative(x))
@@ -195,18 +217,36 @@ func Newton(yourVariant Data) (float64, int) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 /*
 func UpdateNewton(yourVariant Data) (float64, int) {
-	newFunc := func(x float64) (float64) {
-		return x - (yourVariant.Func(x) / yourVariant.firstDerivative((yourVariant.A + yourVariant.B) / 2))
+	a, b, e := yourVariant.A, yourVariant.B, yourVariant.E
+	i := 1
+	Func := yourVariant.Func
+
+	if min, max := yourVariant.findMinMaxSecondDerivative(); math.Abs(min + max) < math.Abs(min) + math.Abs(max) {
+		root := yourVariant.findRootSecondDerivative()
+
+		if Func(root) > 0 {
+			if Func(a) < 0 {
+				b = root
+			} else if Func(b) < 0 {
+				a = root
+			}
+		} else if Func(root) < 0 {
+			if Func(a) > 0 {
+				b = root
+			} else if Func(b) > 0 {
+				a = root
+			}
+		}
 	}
 
-	x0 := (yourVariant.A + yourVariant.B) / 2
+	newFunc := func(x float64) (float64) {
+		return x - (Func(x) / yourVariant.firstDerivative((a + b) / 2))
+	}
+
+	x0 := (a + b) / 2
 	i, x := 1, newFunc(x0)
 
-	for ;; i++{
-		if math.Abs(x - x0) < yourVariant.E || math.Abs(yourVariant.Func(x)) < yourVariant.E {
-			break
-		}
-
+	for ; math.Abs(x - x0) > e && math.Abs(Func(x)) > e; i++{
 		x0 = x
 		x = newFunc(x0)
 	}
