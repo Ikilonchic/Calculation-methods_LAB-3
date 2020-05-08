@@ -183,11 +183,7 @@ func Newton(yourVariant Data) (float64, int) {
 	x0 := (a + b) / 2
 	i, x := 1, newFunc(x0)
 
-	for ;; i++{
-		if math.Abs(x - x0) < e || math.Abs(Func(x)) < e {
-			break
-		}
-
+	for ; math.Abs(x - x0) > e && math.Abs(Func(x)) > e; i++{
 		x0 = x
 		x = newFunc(x0)
 	}
@@ -196,10 +192,9 @@ func Newton(yourVariant Data) (float64, int) {
 }
 
 //UpdateNewton ...
+///////////////////////////////////////////////////////////////////////////////////////////
+/*
 func UpdateNewton(yourVariant Data) (float64, int) {
-	///////////////////////////////////////////////////////////////////////////////////////////
-	/*
-
 	newFunc := func(x float64) (float64) {
 		return x - (yourVariant.Func(x) / yourVariant.firstDerivative((yourVariant.A + yourVariant.B) / 2))
 	}
@@ -217,11 +212,9 @@ func UpdateNewton(yourVariant Data) (float64, int) {
 	}
 
 	return x, i
-
-	*/
-	///////////////////////////////////////////////////////////////////////////////////////////
-	return 0, 0
 }
+*/
+///////////////////////////////////////////////////////////////////////////////////////////
 
 //Hord ...
 func Hord(yourVariant Data) (float64, int) {
@@ -284,11 +277,7 @@ func Hord(yourVariant Data) (float64, int) {
 
 	i, x := 1, newFunc(x0)
 
-	for ;; i++{
-		if math.Abs(x - x0) < e || math.Abs(Func(x)) < e {
-			break
-		}
-
+	for ; math.Abs(x - x0) > e && math.Abs(Func(x)) > e; i++{
 		x0 = x
 		x = newFunc(x0)
 	}
