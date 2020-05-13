@@ -2,12 +2,23 @@ package methods
 
 import (
 	"math"
+	"time"
 )
+
+//Methods ...
+type Methods func(Data) (float64, int)
 
 //Function ...
 type Function func(float64) (float64)
-//Methods ...
-type Methods func(Data) (float64, int)
+
+//CheckTime ...
+func CheckTime(yourMeth methods.Methods, yourVariant methods.Data) (x float64, i int, different time.Duration) {
+	start := time.Now()
+	x, i = yourMeth(yourVariant)
+	different = time.Now().Sub(start)
+
+	return
+}
 
 //Data - all needed variables
 type Data struct {
