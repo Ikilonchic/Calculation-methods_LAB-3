@@ -11,15 +11,6 @@ type Methods func(Data) (float64, int)
 //Function ...
 type Function func(float64) (float64)
 
-//CheckTime ...
-func CheckTime(yourMeth methods.Methods, yourVariant methods.Data) (x float64, i int, different time.Duration) {
-	start := time.Now()
-	x, i = yourMeth(yourVariant)
-	different = time.Now().Sub(start)
-
-	return
-}
-
 //Data - all needed variables
 type Data struct {
 	Func Function
@@ -100,6 +91,15 @@ func (d Data) findMinMaxSecondDerivative() (min float64, max float64) {
 	}
 
 	return 
+}
+
+//CheckTime ...
+func CheckTime(yourMeth Methods, yourVariant Data) (x float64, i int, different time.Duration) {
+	start := time.Now()
+	x, i = yourMeth(yourVariant)
+	different = time.Now().Sub(start)
+
+	return
 }
 
 //Easy ...
