@@ -11,14 +11,14 @@ func main() {
 	myVariant := methods.Data{}
 	
 	//myFunc := func(x float64) (float64) {
-	//	return math.Pow(x, 5) - 2 * math.Pow(x, 4) - 7 * math.Pow(x, 3) + math.Pow(x, 2) - 25
+	//	return math.Pow(x, 3) - 6.1 * math.Pow(x, 2) + x - 1
 	//}
 
 	myFunc := func(x float64) (float64) {
-		return math.Pow(x, 3) - 1.1 * math.Pow(x, 2) - x + 1
+		return math.Pow(x, 2) + 4 * math.Sin(x)
 	}
 
-	myVariant.SetData(myFunc, -1, 10, 0.0000000001)
+	myVariant.SetData(myFunc, -1, 5, 0.0000000001)
 	
 	x, i, timer := methods.CheckTime(methods.Division, myVariant)
 	fmt.Printf("\nDivision: x = %v, iterations = %v, time = %d, result = %v \n", x, i, timer.Nanoseconds(), myFunc(x))
